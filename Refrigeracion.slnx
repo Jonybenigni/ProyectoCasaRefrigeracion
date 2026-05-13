@@ -1,0 +1,10 @@
+<Solution>
+  <Project Path="Refrigeracion.Abstactions/Refrigeracion.Abstactions.csproj" />
+  <Project Path="Refrigeracion.Application/Refrigeracion.Application.csproj" Id="b5f8f2cc-0e13-4112-9e05-f18d65b4f0d7" />
+  <Project Path="Refrigeracion.DataAccess/Refrigeracion.DataAccess.csproj" Id="fd5563dd-1c9c-4045-8d8d-80c493df301d" />
+  <Project Path="Refrigeracion.Entities/Refrigeracion.Entities.csproj" Id="4d4299e0-3240-4834-ac5f-4d1811969c5b" />
+  <Project Path="Refrigeracion.Enums/Refrigeracion.Enums.csproj" Id="39695dc4-ebd1-433f-ae18-32fba5b25f8f" />
+  <Project Path="Refrigeracion.Repository/Refrigeracion.Repository.csproj" Id="8e8d14a9-0dbb-49bd-b5e3-7d5385afb644" />
+  <Project Path="Refrigeracion.Services/Refrigeracion.Services.csproj" Id="acfa13bb-6cdd-408d-b9e8-f5b82e8ca3cf" />
+  <Project Path="Refrigeracion.WebApi/Refrigeracion.WebApi.csproj" Id="1bc9b5ad-d7b0-4a3d-8405-d7c5bf685502" />
+</Solution>
