@@ -8,6 +8,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\Refrigeracion.Abstactions\Refrigeracion.Abstactions.csproj" />
+    <ProjectReference Include="..\Refrigeracion.DataAccess\Refrigeracion.DataAccess.csproj" />
   </ItemGroup>
 
 </Project>

@@ -11,7 +11,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Refrigeracion.Abstactions\Refrigeracion.Abstactions.csproj" />
     <ProjectReference Include="..\Refrigeracion.Enums\Refrigeracion.Enums.csproj" />
   </ItemGroup>
 
