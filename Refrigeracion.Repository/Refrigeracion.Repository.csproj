@@ -9,6 +9,7 @@
   <ItemGroup>
     <ProjectReference Include="..\Refrigeracion.Abstactions\Refrigeracion.Abstactions.csproj" />
     <ProjectReference Include="..\Refrigeracion.DataAccess\Refrigeracion.DataAccess.csproj" />
+    <ProjectReference Include="..\Refrigeracion.Entities\Refrigeracion.Entities.csproj" />
   </ItemGroup>
 
 </Project>
