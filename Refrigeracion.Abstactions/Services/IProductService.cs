@@ -3,10 +3,9 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 
-namespace Refrigeracion.Abstactions
+namespace Refrigeracion.Abstactions.Services
 {
-  
-    public interface IProductRepository
+    public interface IProductService
     {
         // 1. Obtener todos los productos
         Task<List<Product>> GetAll();
@@ -26,6 +25,8 @@ namespace Refrigeracion.Abstactions
         // 5. Eliminar un producto
 
         Task Delete(int id);
-    }
 
+
+
+    }
 }

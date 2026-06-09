@@ -1,5 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using Refrigeracion.Abstactions;
+using Refrigeracion.Abstactions.Repository;
 using Refrigeracion.DataAccess;
 using Refrigeracion.Entities;
 using System;
