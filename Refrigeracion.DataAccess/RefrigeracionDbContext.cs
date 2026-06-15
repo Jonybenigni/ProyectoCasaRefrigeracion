@@ -11,7 +11,6 @@ namespace Refrigeracion.DataAccess
         public RefrigeracionDbContext(DbContextOptions<RefrigeracionDbContext> options)
             : base(options)
         {
-
         }
 
         public DbSet<Customer> Customers { get; set; }
@@ -21,7 +20,19 @@ namespace Refrigeracion.DataAccess
         public DbSet<SupplierPayment> SupplierPayments { get; set; }
         public DbSet<TaskItem> TaskItems { get; set; }
 
+        protected override void OnModelCreating(ModelBuilder modelBuilder)
+        {
+            modelBuilder.Entity<Product>()
+                .Property(p => p.Price)
+                .HasPrecision(18, 2);
 
+            modelBuilder.Entity<SupplierPayment>()
+                .Property(s => s.Amount)
+                .HasPrecision(18, 2);
 
+            modelBuilder.Entity<PendingJob>()
+                .Property(p => p.Amount)
+                .HasPrecision(18, 2);
+        }
     }
 }
