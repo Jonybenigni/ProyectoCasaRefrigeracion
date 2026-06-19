@@ -1,12 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations.Schema;
 using System.Text;
 
-namespace Refrigeracion.Entities
+namespace Refrigeracion.Application.DTOs.Product
 {
-    //tabla de productos, con sus respectivos campos, como id, nombre, descripcion, stock actual, stock minimo, precio y proveedor
-    public class Product
+    public class ProductResponseDto
     {
         public int Id { get; set; }
         public string Name { get; set; } = string.Empty;
@@ -15,8 +13,6 @@ namespace Refrigeracion.Entities
         public int MinimumStock { get; set; }
         public decimal Price { get; set; }
 
-        public ICollection<ProductSupplier> ProductSuppliers { get; set; } = new List<ProductSupplier>();
+
     }
-
-
 }

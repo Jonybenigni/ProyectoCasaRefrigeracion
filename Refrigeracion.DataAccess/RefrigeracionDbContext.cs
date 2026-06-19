@@ -19,6 +19,7 @@ namespace Refrigeracion.DataAccess
         public DbSet<Supplier> Suppliers { get; set; }
         public DbSet<SupplierPayment> SupplierPayments { get; set; }
         public DbSet<TaskItem> TaskItems { get; set; }
+        public DbSet<ProductSupplier> ProductSuppliers { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {

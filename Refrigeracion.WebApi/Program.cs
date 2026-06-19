@@ -28,6 +28,7 @@ builder.Services.AddScoped<ISupplierPaymentRepository, SupplierPaymentRepository
 builder.Services.AddScoped<ICustomerRepository, CustomerRepository>();
 builder.Services.AddScoped<IPendingJobRepository, PendingJobRepository>();
 builder.Services.AddScoped<ITaskItemRepository, TaskItemRepository>();
+builder.Services.AddScoped<IProductSupplierRepository, ProductSupplierRepository>();
 
 // Servicios
 builder.Services.AddScoped<IProductService, ProductService>();
@@ -36,6 +37,7 @@ builder.Services.AddScoped<ISupplierPaymentService, SupplierPaymentService>();
 builder.Services.AddScoped<ICustomerService, CustomerService>();
 builder.Services.AddScoped<IPendingJobService, PendingJobService>();
 builder.Services.AddScoped<ITaskItemService, TaskItemService>();
+builder.Services.AddScoped<IProductSupplierService, ProductSupplierService>();
 
 var app = builder.Build();
 

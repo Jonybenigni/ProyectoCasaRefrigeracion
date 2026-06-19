@@ -2,10 +2,9 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace Refrigeracion.Entities
+namespace Refrigeracion.Application.DTOs.Supplier
 {
-    //tabla de proveedores, con sus respectivos campos, como id, nombre, telefono, correo, direccion y categoria
-    public class Supplier
+    public class SupplierResponseDto
     {
         public int Id { get; set; }
         public string Name { get; set; } = string.Empty;
@@ -13,11 +12,5 @@ namespace Refrigeracion.Entities
         public string Mail { get; set; } = string.Empty;
         public string Address { get; set; } = string.Empty;
         public string Category { get; set; } = string.Empty;
-
-        // Nueva: lista de productos que provee
-        public ICollection<ProductSupplier> ProductSuppliers { get; set; } = new List<ProductSupplier>();
     }
-
-
 }
-
