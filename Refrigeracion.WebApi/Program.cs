@@ -4,6 +4,7 @@ using Refrigeracion.Abstactions.Services;
 using Refrigeracion.DataAccess;
 using Refrigeracion.Repository;
 using Refrigeracion.Services;
+using Refrigeracion.WebApi.Mapping;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -14,6 +15,7 @@ builder.Services.AddControllers();
 
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
+builder.Services.AddAutoMapper(typeof(SupplierMappingProfile).Assembly);
 
 builder.Services.AddDbContext<RefrigeracionDbContext>(options =>
 {

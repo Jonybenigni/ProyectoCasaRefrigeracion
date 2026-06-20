@@ -37,16 +37,22 @@ namespace Refrigeracion.Repository
 
         public async Task<List<ProductSupplier>> GetAll()
         {
-            return await _context.ProductSuppliers.ToListAsync();
+            return await _context.ProductSuppliers
+                .Include(ps => ps.Product)
+                .Include(ps => ps.Supplier)
+                .ToListAsync();
         }
 
         public async Task<ProductSupplier> GetById(int id)
         {
-            return await _context.ProductSuppliers.FindAsync(id);
+            return await _context.ProductSuppliers
+                .Include(ps => ps.Product)
+                .Include(ps => ps.Supplier)
+                .FirstOrDefaultAsync(ps => ps.Id == id);
         }
 
-       
 
-        
+
+
     }
 }

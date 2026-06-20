@@ -1,5 +1,7 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using AutoMapper;
+using Microsoft.AspNetCore.Mvc;
 using Refrigeracion.Abstactions.Services;
+using Refrigeracion.Application.DTOs.PendingJob;
 using Refrigeracion.Entities;
 using Refrigeracion.Services;
 
@@ -10,58 +12,60 @@ namespace Refrigeracion.WebApi.Controllers
     public class PendingJobsController : ControllerBase
     {
         private readonly IPendingJobService _pendingJobService;
-        public PendingJobsController(IPendingJobService pendingJobService)
+        private readonly IMapper _mapper;
+
+        public PendingJobsController(IPendingJobService pendingJobService, IMapper mapper)
         {
             _pendingJobService = pendingJobService;
+            _mapper = mapper;
         }
 
         [HttpGet]
         public async Task<IActionResult> GetAll()
         {
-            var pendingJobService = await _pendingJobService.GetAll();
-            return Ok(pendingJobService);
+            var pendingJobs = await _pendingJobService.GetAll();
+            var result = _mapper.Map<List<PendingJobResponseDto>>(pendingJobs);
+            return Ok(result);
         }
 
         [HttpGet("{id}")]
         public async Task<IActionResult> GetById(int id)
         {
-            var pendingJobService = await _pendingJobService.GetById(id);
-
-            if (pendingJobService == null)
+            var pendingJob = await _pendingJobService.GetById(id);
+            if (pendingJob == null)
             {
                 return NotFound();
             }
-
-            return Ok(pendingJobService);
+            var result = _mapper.Map<PendingJobResponseDto>(pendingJob);
+            return Ok(result);
         }
 
         [HttpPost]
-        public async Task<IActionResult> Add(PendingJob pendingJobService)
+        public async Task<IActionResult> Add(PendingJobRequestDto request)
         {
             if (!ModelState.IsValid)
             {
                 return BadRequest();
             }
-
-            await _pendingJobService.Add(pendingJobService);
+            var pendingJob = _mapper.Map<PendingJob>(request);
+            await _pendingJobService.Add(pendingJob);
             return Ok();
         }
 
         [HttpPut("{id}")]
-        public async Task<IActionResult> Update(int id, PendingJob pendingJobService)
+        public async Task<IActionResult> Update(int id, PendingJobRequestDto request)
         {
             if (!ModelState.IsValid)
             {
                 return BadRequest();
             }
-
             var existing = await _pendingJobService.GetById(id);
             if (existing == null)
             {
                 return NotFound();
             }
-
-            await _pendingJobService.Update(pendingJobService);
+            _mapper.Map(request, existing);
+            await _pendingJobService.Update(existing);
             return Ok();
         }
 
@@ -73,14 +77,8 @@ namespace Refrigeracion.WebApi.Controllers
             {
                 return NotFound();
             }
-
             await _pendingJobService.Delete(id);
             return Ok();
         }
-
-
-
-
-
     }
 }

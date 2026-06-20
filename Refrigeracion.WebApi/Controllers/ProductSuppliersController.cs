@@ -1,5 +1,7 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using AutoMapper;
+using Microsoft.AspNetCore.Mvc;
 using Refrigeracion.Abstactions.Services;
+using Refrigeracion.Application.DTOs.ProductSupplier;
 using Refrigeracion.Entities;
 using Refrigeracion.Services;
 
@@ -7,48 +9,48 @@ namespace Refrigeracion.WebApi.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class ProductSuppliersController:ControllerBase
+    public class ProductSuppliersController : ControllerBase
     {
         private readonly IProductSupplierService _productSupplierService;
+        private readonly IMapper _mapper;
 
-        public ProductSuppliersController(IProductSupplierService productSupplierService)
+        public ProductSuppliersController(IProductSupplierService productSupplierService, IMapper mapper)
         {
             _productSupplierService = productSupplierService;
+            _mapper = mapper;
         }
 
         [HttpGet]
         public async Task<IActionResult> GetAll()
         {
-            var productSupplierService = await _productSupplierService.GetAll();
-            return Ok(productSupplierService);
+            var productSuppliers = await _productSupplierService.GetAll();
+            var result = _mapper.Map<List<ProductSupplierResponseDto>>(productSuppliers);
+            return Ok(result);
         }
 
         [HttpGet("{id}")]
         public async Task<IActionResult> GetById(int id)
         {
-            var productSupplierService = await _productSupplierService.GetById(id);
-
-            if (productSupplierService == null)
+            var productSupplier = await _productSupplierService.GetById(id);
+            if (productSupplier == null)
             {
                 return NotFound();
             }
-
-            return Ok(productSupplierService);
+            var result = _mapper.Map<ProductSupplierResponseDto>(productSupplier);
+            return Ok(result);
         }
 
         [HttpPost]
-        public async Task<IActionResult> Add(ProductSupplier productSupplierService)
+        public async Task<IActionResult> Add(ProductSupplierRequestDto request)
         {
             if (!ModelState.IsValid)
             {
                 return BadRequest();
             }
-
-            await _productSupplierService.Add(productSupplierService);
+            var productSupplier = _mapper.Map<ProductSupplier>(request);
+            await _productSupplierService.Add(productSupplier);
             return Ok();
         }
-
-  
 
         [HttpDelete("{id}")]
         public async Task<IActionResult> Delete(int id)
@@ -58,20 +60,8 @@ namespace Refrigeracion.WebApi.Controllers
             {
                 return NotFound();
             }
-
             await _productSupplierService.Delete(id);
             return Ok();
         }
-
-
-
-
-
-
-
-
-
-
-
     }
 }

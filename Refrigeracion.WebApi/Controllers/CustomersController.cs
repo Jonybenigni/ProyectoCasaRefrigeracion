@@ -1,70 +1,71 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using AutoMapper;
+using Microsoft.AspNetCore.Mvc;
 using Refrigeracion.Abstactions.Services;
+using Refrigeracion.Application.DTOs.Customer;
 using Refrigeracion.Entities;
 using Refrigeracion.Services;
 
 namespace Refrigeracion.WebApi.Controllers
 {
-
     [Route("api/[controller]")]
     [ApiController]
     public class CustomersController : ControllerBase
     {
-
         private readonly ICustomerService _customerService;
+        private readonly IMapper _mapper;
 
-        public CustomersController(ICustomerService customerService)
+        public CustomersController(ICustomerService customerService, IMapper mapper)
         {
             _customerService = customerService;
+            _mapper = mapper;
         }
 
         [HttpGet]
         public async Task<IActionResult> GetAll()
         {
-            var customerService = await _customerService.GetAll();
-            return Ok(customerService);
+            var customers = await _customerService.GetAll();
+            var result = _mapper.Map<List<CustomerResponseDto>>(customers);
+            return Ok(result);
         }
 
         [HttpGet("{id}")]
         public async Task<IActionResult> GetById(int id)
         {
-            var customerService = await _customerService.GetById(id);
-
-            if (customerService == null)
+            var customer = await _customerService.GetById(id);
+            if (customer == null)
             {
                 return NotFound();
             }
-
-            return Ok(customerService);
+            var result = _mapper.Map<CustomerResponseDto>(customer);
+            return Ok(result);
         }
 
         [HttpPost]
-        public async Task<IActionResult> Add(Customer customerService)
+        public async Task<IActionResult> Add(CustomerRequestDto request)
         {
             if (!ModelState.IsValid)
             {
                 return BadRequest();
             }
-
-            await _customerService.Add(customerService);
+            var customer = _mapper.Map<Customer>(request);
+            await _customerService.Add(customer);
             return Ok();
         }
 
         [HttpPut("{id}")]
-        public async Task<IActionResult> Update(int id, Customer customerService)
+        public async Task<IActionResult> Update(int id, CustomerRequestDto request)
         {
             if (!ModelState.IsValid)
             {
                 return BadRequest();
             }
-
             var existing = await _customerService.GetById(id);
             if (existing == null)
             {
                 return NotFound();
             }
-
-            await _customerService.Update(customerService);
+            _mapper.Map(request, existing);
+            await _customerService.Update(existing);
             return Ok();
         }
 
@@ -76,19 +77,8 @@ namespace Refrigeracion.WebApi.Controllers
             {
                 return NotFound();
             }
-
             await _customerService.Delete(id);
             return Ok();
         }
-
-
-
-
-
-
-
-
-
-
     }
 }
