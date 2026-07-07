@@ -1,12 +1,14 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore;
 using Refrigeracion.Entities;
+using Refrigeracion.Entities.MicrosoftIdentity;
 using System;
 using System.Collections.Generic;
 using System.Text;
 
 namespace Refrigeracion.DataAccess
 {
-    public class RefrigeracionDbContext : DbContext
+    public class RefrigeracionDbContext : IdentityDbContext<User, Role, Guid, UserClaim, UserRole, UserLogin, RoleClaim, UserToken>
     {
         public RefrigeracionDbContext(DbContextOptions<RefrigeracionDbContext> options)
             : base(options)
@@ -23,6 +25,9 @@ namespace Refrigeracion.DataAccess
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
+            base.OnModelCreating(modelBuilder);
+            modelBuilder.ApplyConfigurationsFromAssembly(GetType().Assembly);
+
             modelBuilder.Entity<Product>()
                 .Property(p => p.Price)
                 .HasPrecision(18, 2);

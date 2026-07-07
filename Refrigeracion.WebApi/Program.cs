@@ -1,7 +1,9 @@
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Refrigeracion.Abstactions.Repository;
 using Refrigeracion.Abstactions.Services;
 using Refrigeracion.DataAccess;
+using Refrigeracion.Entities.MicrosoftIdentity;
 using Refrigeracion.Repository;
 using Refrigeracion.Services;
 using Refrigeracion.WebApi.Mapping;
@@ -19,6 +21,10 @@ builder.Services.AddDbContext<RefrigeracionDbContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"),
         b => b.MigrationsAssembly("Refrigeracion.WebApi"));
 });
+
+builder.Services.AddIdentity<User, Role>()
+    .AddEntityFrameworkStores<RefrigeracionDbContext>()
+    .AddDefaultTokenProviders();
 
 // Repositorios
 builder.Services.AddScoped<IProductRepository, ProductRepository>();
