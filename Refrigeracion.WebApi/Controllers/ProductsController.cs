@@ -3,9 +3,12 @@ using Microsoft.AspNetCore.Mvc;
 using Refrigeracion.Abstactions.Services;
 using Refrigeracion.Application.DTOs.Product;
 using Refrigeracion.Entities;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Authorization;
 
 namespace Refrigeracion.WebApi.Controllers
 {
+    [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
     [Route("api/[controller]")]
     [ApiController]
     public class ProductsController : ControllerBase

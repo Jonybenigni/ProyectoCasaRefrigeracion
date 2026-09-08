@@ -4,8 +4,12 @@ using Refrigeracion.Abstactions.Services;
 using Refrigeracion.Application.DTOs.Supplier;
 using Refrigeracion.Entities;
 using Refrigeracion.Services;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Authorization;
+
 namespace Refrigeracion.WebApi.Controllers
 {
+    [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
     [Route("api/[controller]")]
     [ApiController]
     public class SuppliersController : ControllerBase
