@@ -15,6 +15,9 @@ using System.Text;
 
 var builder = WebApplication.CreateBuilder(args);
 
+// Configuracion propia de cada PC (por ejemplo la conexion a la base). No se sube al repositorio
+builder.Configuration.AddJsonFile("appsettings.Local.json", optional: true, reloadOnChange: true);
+
 builder.Services.AddControllers();
 
 
@@ -22,8 +25,8 @@ const string FrontendCorsPolicy = "Frontend";
 var allowedOrigins = builder.Configuration.GetSection("Cors:AllowedOrigins").Get<string[]>() ?? Array.Empty<string>();
 builder.Services.AddCors(options =>
 {
-    options.AddPolicy("Frontend", policy =>
-        policy.WithOrigins("http://localhost:9000")
+    options.AddPolicy(FrontendCorsPolicy, policy =>
+        policy.WithOrigins(allowedOrigins)
               .AllowAnyHeader()
               .AllowAnyMethod());
 });
@@ -112,6 +115,28 @@ builder.Services.AddScoped<ITokenHandlerService, TokenHandlerService>();
 
 
 var app = builder.Build();
+
+// Al arrancar se crea la base con las migraciones y el usuario inicial, si todavia no existen
+using (var scope = app.Services.CreateScope())
+{
+    var db = scope.ServiceProvider.GetRequiredService<RefrigeracionDbContext>();
+    await db.Database.MigrateAsync();
+
+    var userManager = scope.ServiceProvider.GetRequiredService<UserManager<User>>();
+    var email = app.Configuration["UsuarioInicial:Email"]!;
+    if (await userManager.FindByEmailAsync(email) == null)
+    {
+        var usuarioInicial = new User
+        {
+            Email = email,
+            UserName = email.Substring(0, email.IndexOf('@')),
+            FirstName = "Admin",
+            LastName = "Refrigeracion",
+            IsActive = true
+        };
+        await userManager.CreateAsync(usuarioInicial, app.Configuration["UsuarioInicial:Password"]!);
+    }
+}
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
