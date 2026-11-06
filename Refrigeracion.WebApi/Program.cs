@@ -17,6 +17,17 @@ var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddControllers();
 
+
+const string FrontendCorsPolicy = "Frontend";
+var allowedOrigins = builder.Configuration.GetSection("Cors:AllowedOrigins").Get<string[]>() ?? Array.Empty<string>();
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("Frontend", policy =>
+        policy.WithOrigins("http://localhost:9000")
+              .AllowAnyHeader()
+              .AllowAnyMethod());
+});
+
 builder.Services.AddEndpointsApiExplorer();
 
 builder.Services.AddSwaggerGen(options =>
@@ -97,6 +108,9 @@ builder.Services.AddScoped<ITaskItemService, TaskItemService>();
 builder.Services.AddScoped<IProductSupplierService, ProductSupplierService>();
 builder.Services.AddScoped<ITokenHandlerService, TokenHandlerService>();
 
+
+
+
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
@@ -107,6 +121,8 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
+app.UseCors(FrontendCorsPolicy);
+
 
 app.UseAuthentication();
 app.UseAuthorization();
