@@ -6,6 +6,7 @@ using Refrigeracion.Entities;
 using Refrigeracion.Services;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.EntityFrameworkCore;
 
 namespace Refrigeracion.WebApi.Controllers
 {
@@ -80,7 +81,15 @@ namespace Refrigeracion.WebApi.Controllers
             {
                 return NotFound();
             }
-            await _customerService.Delete(id);
+            // La base no deja borrar un cliente con trabajos cargados (sin cascada)
+            try
+            {
+                await _customerService.Delete(id);
+            }
+            catch (Exception ex) when (ex is DbUpdateException || ex is InvalidOperationException)
+            {
+                return BadRequest("No se puede eliminar el cliente porque tiene trabajos cargados.");
+            }
             return Ok();
         }
     }

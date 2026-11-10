@@ -39,6 +39,32 @@ namespace Refrigeracion.DataAccess
             modelBuilder.Entity<PendingJob>()
                 .Property(p => p.Amount)
                 .HasPrecision(18, 2);
+
+            // Sin borrado en cascada: no se puede borrar un cliente, proveedor o producto
+            // que tenga datos asociados, asi no se pierde la historia sin querer
+            modelBuilder.Entity<PendingJob>()
+                .HasOne(p => p.Customer)
+                .WithMany()
+                .HasForeignKey(p => p.CustomerId)
+                .OnDelete(DeleteBehavior.Restrict);
+
+            modelBuilder.Entity<SupplierPayment>()
+                .HasOne(s => s.Supplier)
+                .WithMany()
+                .HasForeignKey(s => s.SupplierId)
+                .OnDelete(DeleteBehavior.Restrict);
+
+            modelBuilder.Entity<ProductSupplier>()
+                .HasOne(ps => ps.Product)
+                .WithMany(p => p.ProductSuppliers)
+                .HasForeignKey(ps => ps.ProductId)
+                .OnDelete(DeleteBehavior.Restrict);
+
+            modelBuilder.Entity<ProductSupplier>()
+                .HasOne(ps => ps.Supplier)
+                .WithMany(s => s.ProductSuppliers)
+                .HasForeignKey(ps => ps.SupplierId)
+                .OnDelete(DeleteBehavior.Restrict);
         }
     }
 }

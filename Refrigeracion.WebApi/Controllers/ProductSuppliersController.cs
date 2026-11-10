@@ -15,11 +15,15 @@ namespace Refrigeracion.WebApi.Controllers
     public class ProductSuppliersController : ControllerBase
     {
         private readonly IProductSupplierService _productSupplierService;
+        private readonly IProductService _productService;
+        private readonly ISupplierService _supplierService;
         private readonly IMapper _mapper;
 
-        public ProductSuppliersController(IProductSupplierService productSupplierService, IMapper mapper)
+        public ProductSuppliersController(IProductSupplierService productSupplierService, IProductService productService, ISupplierService supplierService, IMapper mapper)
         {
             _productSupplierService = productSupplierService;
+            _productService = productService;
+            _supplierService = supplierService;
             _mapper = mapper;
         }
 
@@ -49,6 +53,15 @@ namespace Refrigeracion.WebApi.Controllers
             if (!ModelState.IsValid)
             {
                 return BadRequest();
+            }
+            // El producto y el proveedor tienen que existir: si no, la API devolveria 500
+            if (await _productService.GetById(request.ProductId) == null)
+            {
+                return BadRequest("El producto elegido no existe.");
+            }
+            if (await _supplierService.GetById(request.SupplierId) == null)
+            {
+                return BadRequest("El proveedor elegido no existe.");
             }
             var productSupplier = _mapper.Map<ProductSupplier>(request);
             await _productSupplierService.Add(productSupplier);

@@ -15,11 +15,13 @@ namespace Refrigeracion.WebApi.Controllers
     public class SupplierPaymentsController : ControllerBase
     {
         private readonly ISupplierPaymentService _supplierPaymentService;
+        private readonly ISupplierService _supplierService;
         private readonly IMapper _mapper;
 
-        public SupplierPaymentsController(ISupplierPaymentService supplierPaymentService, IMapper mapper)
+        public SupplierPaymentsController(ISupplierPaymentService supplierPaymentService, ISupplierService supplierService, IMapper mapper)
         {
             _supplierPaymentService = supplierPaymentService;
+            _supplierService = supplierService;
             _mapper = mapper;
         }
 
@@ -50,6 +52,11 @@ namespace Refrigeracion.WebApi.Controllers
             {
                 return BadRequest();
             }
+            // El proveedor tiene que existir: si no, la base rechaza el alta y la API devolveria 500
+            if (await _supplierService.GetById(request.SupplierId) == null)
+            {
+                return BadRequest("El proveedor elegido no existe.");
+            }
             var supplierPayment = _mapper.Map<SupplierPayment>(request);
             await _supplierPaymentService.Add(supplierPayment);
             return Ok();
@@ -66,6 +73,10 @@ namespace Refrigeracion.WebApi.Controllers
             if (existing == null)
             {
                 return NotFound();
+            }
+            if (await _supplierService.GetById(request.SupplierId) == null)
+            {
+                return BadRequest("El proveedor elegido no existe.");
             }
             _mapper.Map(request, existing);
             await _supplierPaymentService.Update(existing);

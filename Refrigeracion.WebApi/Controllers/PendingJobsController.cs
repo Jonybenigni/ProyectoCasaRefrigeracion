@@ -15,11 +15,13 @@ namespace Refrigeracion.WebApi.Controllers
     public class PendingJobsController : ControllerBase
     {
         private readonly IPendingJobService _pendingJobService;
+        private readonly ICustomerService _customerService;
         private readonly IMapper _mapper;
 
-        public PendingJobsController(IPendingJobService pendingJobService, IMapper mapper)
+        public PendingJobsController(IPendingJobService pendingJobService, ICustomerService customerService, IMapper mapper)
         {
             _pendingJobService = pendingJobService;
+            _customerService = customerService;
             _mapper = mapper;
         }
 
@@ -50,6 +52,11 @@ namespace Refrigeracion.WebApi.Controllers
             {
                 return BadRequest();
             }
+            // El cliente tiene que existir: si no, la base rechaza el alta y la API devolveria 500
+            if (await _customerService.GetById(request.CustomerId) == null)
+            {
+                return BadRequest("El cliente elegido no existe.");
+            }
             var pendingJob = _mapper.Map<PendingJob>(request);
             await _pendingJobService.Add(pendingJob);
             return Ok();
@@ -66,6 +73,10 @@ namespace Refrigeracion.WebApi.Controllers
             if (existing == null)
             {
                 return NotFound();
+            }
+            if (await _customerService.GetById(request.CustomerId) == null)
+            {
+                return BadRequest("El cliente elegido no existe.");
             }
             _mapper.Map(request, existing);
             await _pendingJobService.Update(existing);

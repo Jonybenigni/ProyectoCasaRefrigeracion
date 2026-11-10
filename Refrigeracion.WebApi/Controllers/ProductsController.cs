@@ -5,6 +5,7 @@ using Refrigeracion.Application.DTOs.Product;
 using Refrigeracion.Entities;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.EntityFrameworkCore;
 
 namespace Refrigeracion.WebApi.Controllers
 {
@@ -79,7 +80,15 @@ namespace Refrigeracion.WebApi.Controllers
             {
                 return NotFound();
             }
-            await _productService.Delete(id);
+            // La base no deja borrar un producto con proveedores asociados (sin cascada)
+            try
+            {
+                await _productService.Delete(id);
+            }
+            catch (Exception ex) when (ex is DbUpdateException || ex is InvalidOperationException)
+            {
+                return BadRequest("No se puede eliminar el producto porque tiene proveedores asociados.");
+            }
             return Ok();
         }
     }
